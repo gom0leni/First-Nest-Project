@@ -18,7 +18,7 @@ import { UsersService } from './users.service';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
-import { User } from './user.entity';
+import { User } from './interface/user.interface';
 import { AuthGuard } from 'src/guards/auth.guard';
 
 @Controller('auth')
@@ -56,7 +56,7 @@ export class UsersController {
 
   @Get('/:id')
   async findUser(@Param('id') id: string) {
-    const user = await this.userService.findOne(parseInt(id));
+    const user = await this.userService.findOne(id);
 
     if (!user) {
       throw new NotFoundException('user not found.');
@@ -70,18 +70,15 @@ export class UsersController {
     return this.userService.find(email);
   }
 
-  @Delete('/:id')
+  @Delete('/remove/:id')
   async removeUser(@Param('id') id: string) {
-    const user = await this.userService.remove(parseInt(id));
-    if (!user) {
-      throw new NotFoundException('user not found.');
-    }
+    const user = await this.userService.remove(id);
 
     return user;
   }
 
-  @Patch('/:id')
+  @Patch('/update/:id')
   updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) {
-    return this.userService.update(parseInt(id), body);
+    return this.userService.update(id, body);
   }
 }
