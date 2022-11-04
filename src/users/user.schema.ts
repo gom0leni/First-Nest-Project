@@ -1,23 +1,34 @@
-import * as validator from 'class-validator';
-import * as mongoose from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, ObjectId } from 'mongoose';
+import { Exclude, Transform, Type } from 'class-transformer';
+import { IsEmail } from 'class-validator';
+import { Report, ReportSchema } from 'src/reports/report.schema';
 
-export const UserSchema = new mongoose.Schema(
-  {
-    email: {
-      type: String,
-      unique: true,
-      validate: validator.isEmail,
-      required: [true, 'EMAIL_IS_BLANK'],
-    },
-    password: {
-      type: String,
-      minlength: 5,
-      maxlength: 1024,
-      required: [true, 'PASSWORD_IS_BLANK'],
-    },
-  },
-  {
-    versionKey: false,
-    timestamps: true,
-  },
-);
+export type UserDocument = User & Document;
+
+@Schema({ timestamps: true, versionKey: false })
+export class User {
+  @Transform(({ value }) => value.toString())
+  _id: ObjectId;
+
+  @Prop({
+    unique: true,
+    validate: IsEmail(),
+    required: true,
+  })
+  email: string;
+
+  @Prop({
+    minlength: 5,
+    maxlength: 1024,
+    required: true,
+  })
+  @Exclude()
+  password: string;
+
+  @Prop({ type: ReportSchema })
+  @Type(() => Report)
+  reports: Report[];
+}
+
+export const UserSchema = SchemaFactory.createForClass(User);
