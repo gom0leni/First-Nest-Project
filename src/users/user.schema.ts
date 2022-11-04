@@ -26,6 +26,9 @@ export class User {
   @Exclude()
   password: string;
 
+  @Prop({ default: true })
+  admin: boolean;
+
   @Prop({ type: ReportSchema })
   @Type(() => Report)
   reports: Report[];

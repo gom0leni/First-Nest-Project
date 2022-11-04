@@ -22,5 +22,6 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     'no-empty-function': 'off',
     '@typescript-eslint/no-empty-function': 'error',
+    '@typescript-eslint/ban-ts-comment': 'disable'
   },
 };
